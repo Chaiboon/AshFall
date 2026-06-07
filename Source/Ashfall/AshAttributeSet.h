@@ -29,7 +29,13 @@ public:
 	FGameplayAttributeData MaxHealth;
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes")
 	FGameplayAttributeData Health;
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes")
+	FGameplayAttributeData MaxStamina;
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes")
+	FGameplayAttributeData Stamina;
 
 	ATTRIBUTE_ACCESSORS(UAshAttributeSet, MaxHealth)
 	ATTRIBUTE_ACCESSORS(UAshAttributeSet, Health)
+	ATTRIBUTE_ACCESSORS(UAshAttributeSet, MaxStamina)
+	ATTRIBUTE_ACCESSORS(UAshAttributeSet, Stamina)
 };

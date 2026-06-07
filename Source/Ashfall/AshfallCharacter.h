@@ -8,6 +8,10 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
 #include "AshAttributeSet.h"
+#include "EnhancedInputSubsystems.h"
+#include "InputAction.h"
+#include "InputActionValue.h"
+#include "EnhancedInputComponent.h"
 
 #include "AshfallCharacter.generated.h"
 
@@ -53,6 +57,15 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Input")
 	UInputAction* MouseLookAction;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* LightAttackAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* DodgeRollAction;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* GroundSlamAction;
+
 public:
 
 	/** Constructor */
@@ -71,6 +84,11 @@ protected:
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
 
+	void LightAttack(const FInputActionValue& Value);
+
+	void DodgeRoll(const FInputActionValue& Value);
+
+	void GroundSlam(const FInputActionValue& Value);
 public:
 
 	/** Handles move inputs from either controls or UI interfaces */
@@ -98,6 +116,8 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 public:
+	virtual void BeginPlay() override;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UAbilitySystemComponent* AbilitySystemComponent;
 
@@ -106,5 +126,12 @@ public:
 	UAshAttributeSet* AttributeSet;
 
 	UAshAttributeSet* GetAttributeSet() const;
-};
 
+	UPROPERTY(EditDefaultsOnly,Category="Ability")
+	TSubclassOf<UGameplayAbility> LightAttackAbilityClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Ability")
+	TSubclassOf<UGameplayAbility> DodgeRollAbilityClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Ability")
+	TSubclassOf<UGameplayAbility> GroundSlamAbilityClass;
+};

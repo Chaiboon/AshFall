@@ -10,6 +10,9 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "AshLightAttack.h"
+#include "AshDodgeRoll.h"
+#include "AbilitySystemComponent.h"
 #include "Ashfall.h"
 
 AAshfallCharacter::AAshfallCharacter()
@@ -68,6 +71,15 @@ void AAshfallCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AAshfallCharacter::Look);
+
+		// Attacking
+		EnhancedInputComponent->BindAction(LightAttackAction, ETriggerEvent::Started, this, &AAshfallCharacter::LightAttack);
+
+		// Dodging
+		EnhancedInputComponent->BindAction(DodgeRollAction, ETriggerEvent::Started, this, &AAshfallCharacter::DodgeRoll);
+
+		// Ground Slamming
+		EnhancedInputComponent->BindAction(GroundSlamAction, ETriggerEvent::Started, this, &AAshfallCharacter::GroundSlam);
 	}
 	else
 	{
@@ -91,6 +103,24 @@ void AAshfallCharacter::Look(const FInputActionValue& Value)
 
 	// route the input
 	DoLook(LookAxisVector.X, LookAxisVector.Y);
+}
+
+void AAshfallCharacter::LightAttack(const FInputActionValue& Value)
+{
+	if (!IsValid(AbilitySystemComponent)) return;
+	AbilitySystemComponent->TryActivateAbilityByClass(LightAttackAbilityClass);
+}
+
+void AAshfallCharacter::DodgeRoll(const FInputActionValue& Value)
+{
+	if (!IsValid(AbilitySystemComponent)) return;
+	AbilitySystemComponent->TryActivateAbilityByClass(DodgeRollAbilityClass);
+}
+
+void AAshfallCharacter::GroundSlam(const FInputActionValue& Value)
+{
+	if (!IsValid(AbilitySystemComponent)) return;
+	AbilitySystemComponent->TryActivateAbilityByClass(GroundSlamAbilityClass);
 }
 
 void AAshfallCharacter::DoMove(float Right, float Forward)
@@ -133,6 +163,19 @@ void AAshfallCharacter::DoJumpEnd()
 {
 	// signal the character to stop jumping
 	StopJumping();
+}
+
+void AAshfallCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	FGameplayAbilitySpec LightAttackSpec(LightAttackAbilityClass, 1);
+	FGameplayAbilitySpec DodgeRollSpec(DodgeRollAbilityClass, 1);
+	FGameplayAbilitySpec GroundSlamSpec(GroundSlamAbilityClass, 1);
+
+	AbilitySystemComponent->GiveAbility(LightAttackSpec);
+	AbilitySystemComponent->GiveAbility(DodgeRollSpec);
+	AbilitySystemComponent->GiveAbility(GroundSlamSpec);
 }
 
 UAbilitySystemComponent* AAshfallCharacter::GetAbilitySystemComponent() const
