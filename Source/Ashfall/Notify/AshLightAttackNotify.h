@@ -1,0 +1,25 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Animation/AnimNotifies/AnimNotify.h"
+#include "AshLightAttackNotify.generated.h"
+
+/**
+ * 
+ */
+UCLASS()
+class ASHFALL_API UAshLightAttackNotify : public UAnimNotify
+{
+	GENERATED_BODY()
+
+public:	
+
+	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
+
+	UPROPERTY(EditDefaultsOnly)
+	float LightAttackRange = 100.0f;
+	UPROPERTY(EditDefaultsOnly)
+	float DamageAmount = 10.0f;
+};

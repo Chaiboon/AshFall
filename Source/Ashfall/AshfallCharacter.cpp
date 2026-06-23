@@ -10,10 +10,12 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
-#include "AshLightAttack.h"
-#include "AshDodgeRoll.h"
+#include "Abilities/AshLightAttack.h"
+#include "Abilities/AshDodgeRoll.h"
 #include "AbilitySystemComponent.h"
+#include "Abilities/AshChargeAttackAbility.h"
 #include "Ashfall.h"
+#include "Enemies/AshBaseEnemy.h"
 
 AAshfallCharacter::AAshfallCharacter()
 {
@@ -80,6 +82,11 @@ void AAshfallCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 		// Ground Slamming
 		EnhancedInputComponent->BindAction(GroundSlamAction, ETriggerEvent::Started, this, &AAshfallCharacter::GroundSlam);
+		
+		// Charge Attacking
+		EnhancedInputComponent->BindAction(ChargeAttackAction, ETriggerEvent::Started, this, &AAshfallCharacter::ChargeAttack);
+		EnhancedInputComponent->BindAction(ChargeAttackAction, ETriggerEvent::Completed, this, &AAshfallCharacter::OnHoldAbilityEnd);
+		EnhancedInputComponent->BindAction(ChargeAttackAction, ETriggerEvent::Canceled, this, &AAshfallCharacter::OnHoldAbilityEnd);
 	}
 	else
 	{
@@ -107,20 +114,38 @@ void AAshfallCharacter::Look(const FInputActionValue& Value)
 
 void AAshfallCharacter::LightAttack(const FInputActionValue& Value)
 {
-	if (!IsValid(AbilitySystemComponent)) return;
+	if (!IsValid(AbilitySystemComponent) || !LightAttackAbilityClass) return;
 	AbilitySystemComponent->TryActivateAbilityByClass(LightAttackAbilityClass);
 }
 
 void AAshfallCharacter::DodgeRoll(const FInputActionValue& Value)
 {
-	if (!IsValid(AbilitySystemComponent)) return;
+	if (!IsValid(AbilitySystemComponent) || !DodgeRollAbilityClass) return;
 	AbilitySystemComponent->TryActivateAbilityByClass(DodgeRollAbilityClass);
 }
 
 void AAshfallCharacter::GroundSlam(const FInputActionValue& Value)
 {
-	if (!IsValid(AbilitySystemComponent)) return;
+	if (!IsValid(AbilitySystemComponent) || !GroundSlamAbilityClass) return;
 	AbilitySystemComponent->TryActivateAbilityByClass(GroundSlamAbilityClass);
+}
+
+void AAshfallCharacter::ChargeAttack(const FInputActionValue& Value)
+{
+	if (!IsValid(AbilitySystemComponent) || !ChargeAttactAbilityClass) return;
+	
+	AbilitySystemComponent->AbilityLocalInputPressed(static_cast<int32>(EAshAbilityInputID::ChargeAttack));
+
+	UE_LOG(LogTemp, Warning, TEXT("Press button"));
+}
+
+void AAshfallCharacter::OnHoldAbilityEnd(const FInputActionValue& Value)
+{
+	if (!IsValid(AbilitySystemComponent) || !ChargeAttactAbilityClass) return;
+	
+	AbilitySystemComponent->AbilityLocalInputReleased(static_cast<int32>(EAshAbilityInputID::ChargeAttack));
+	UE_LOG(LogTemp, Warning, TEXT("Released button"));
+	
 }
 
 void AAshfallCharacter::DoMove(float Right, float Forward)
@@ -172,10 +197,12 @@ void AAshfallCharacter::BeginPlay()
 	FGameplayAbilitySpec LightAttackSpec(LightAttackAbilityClass, 1);
 	FGameplayAbilitySpec DodgeRollSpec(DodgeRollAbilityClass, 1);
 	FGameplayAbilitySpec GroundSlamSpec(GroundSlamAbilityClass, 1);
+	FGameplayAbilitySpec ChargeAttaclSpec(ChargeAttactAbilityClass, 1, static_cast<int32>(EAshAbilityInputID::ChargeAttack));
 
 	AbilitySystemComponent->GiveAbility(LightAttackSpec);
 	AbilitySystemComponent->GiveAbility(DodgeRollSpec);
 	AbilitySystemComponent->GiveAbility(GroundSlamSpec);
+	AbilitySystemComponent->GiveAbility(ChargeAttaclSpec);
 }
 
 UAbilitySystemComponent* AAshfallCharacter::GetAbilitySystemComponent() const

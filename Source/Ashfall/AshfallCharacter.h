@@ -7,11 +7,12 @@
 #include "Logging/LogMacros.h"
 #include "AbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
-#include "AshAttributeSet.h"
+#include "Attributes/AshAttributeSet.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputAction.h"
 #include "InputActionValue.h"
 #include "EnhancedInputComponent.h"
+#include "AshCombatAttackerInterface.h"
 
 #include "AshfallCharacter.generated.h"
 
@@ -20,6 +21,13 @@ class UCameraComponent;
 class UInputAction;
 struct FInputActionValue;
 
+UENUM(BlueprintType)
+enum class EAshAbilityInputID : uint8
+{
+	None			= 0		UMETA(DisplayName = "Other Ability"),
+	ChargeAttack	= 1		UMETA(DisplayName = "Charge Attack")
+};
+
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
 /**
@@ -27,7 +35,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
  *  Implements a controllable orbiting camera
  */
 UCLASS(abstract)
-class AAshfallCharacter : public ACharacter, public IAbilitySystemInterface
+class AAshfallCharacter : public ACharacter, public IAbilitySystemInterface, public IAshCombatAttackerInterface
 {
 	GENERATED_BODY()
 
@@ -65,6 +73,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputAction* GroundSlamAction;
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* ChargeAttackAction;
 
 public:
 
@@ -85,10 +95,10 @@ protected:
 	void Look(const FInputActionValue& Value);
 
 	void LightAttack(const FInputActionValue& Value);
-
 	void DodgeRoll(const FInputActionValue& Value);
-
 	void GroundSlam(const FInputActionValue& Value);
+	void ChargeAttack(const FInputActionValue& Value);
+	void OnHoldAbilityEnd(const FInputActionValue& Value);
 public:
 
 	/** Handles move inputs from either controls or UI interfaces */
@@ -118,6 +128,8 @@ public:
 public:
 	virtual void BeginPlay() override;
 
+	virtual void CheckChargedAttack() override;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UAbilitySystemComponent* AbilitySystemComponent;
 
@@ -129,9 +141,10 @@ public:
 
 	UPROPERTY(EditDefaultsOnly,Category="Ability")
 	TSubclassOf<UGameplayAbility> LightAttackAbilityClass;
-
 	UPROPERTY(EditDefaultsOnly, Category = "Ability")
 	TSubclassOf<UGameplayAbility> DodgeRollAbilityClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Ability")
 	TSubclassOf<UGameplayAbility> GroundSlamAbilityClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Ability")
+	TSubclassOf<UGameplayAbility> ChargeAttactAbilityClass;
 };
