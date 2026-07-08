@@ -18,8 +18,4 @@ public:
 
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
 
-	UPROPERTY(EditDefaultsOnly)
-	float LightAttackRange = 100.0f;
-	UPROPERTY(EditDefaultsOnly)
-	float DamageAmount = 10.0f;
 };

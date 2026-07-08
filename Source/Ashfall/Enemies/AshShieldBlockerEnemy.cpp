@@ -42,18 +42,21 @@ bool AAshShieldBlockerEnemy::IsAttackBlocked()
 	return BlockThreshold < FVector::DotProduct(BlockerForwardVector, AgainstVector);
 }
 
-void AAshShieldBlockerEnemy::Damage_Implementation(float Amount)
+void AAshShieldBlockerEnemy::Damage_Implementation(FGameplayEffectSpecHandle SpecHandle)
 {
 
 	FString ActorName = this->GetActorNameOrLabel();
 	if (IsAttackBlocked())
 	{
-		FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(DamageBlockEffectClass, 1.0f, AbilitySystemComponent->MakeEffectContext());
-		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, FGameplayTag::RequestGameplayTag("Data.BlockDamage"), -Amount);
-		AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+		float DamageAmount = SpecHandle.Data->GetSetByCallerMagnitude(FGameplayTag::RequestGameplayTag("Data.Damage"));
+		FGameplayEffectContextHandle ContextHandle = SpecHandle.Data->GetContext();
+
+		FGameplayEffectSpecHandle BlockSpecHandle = AbilitySystemComponent->MakeOutgoingSpec(DamageBlockEffectClass, 1.0f, ContextHandle);
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(BlockSpecHandle, FGameplayTag::RequestGameplayTag("Data.BlockDamage"), -DamageAmount);
+		Super::Damage_Implementation(BlockSpecHandle);
 	}
 	else
 	{
-		Super::Damage_Implementation(Amount);
+		Super::Damage_Implementation(SpecHandle);
 	}
 }

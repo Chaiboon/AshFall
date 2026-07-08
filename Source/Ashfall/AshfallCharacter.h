@@ -13,6 +13,9 @@
 #include "InputActionValue.h"
 #include "EnhancedInputComponent.h"
 #include "AshCombatAttackerInterface.h"
+#include "Engine/DataTable.h"
+#include "AshPlayerInterface.h"
+
 
 #include "AshfallCharacter.generated.h"
 
@@ -20,6 +23,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UInputAction;
 struct FInputActionValue;
+
 
 UENUM(BlueprintType)
 enum class EAshAbilityInputID : uint8
@@ -35,7 +39,10 @@ DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
  *  Implements a controllable orbiting camera
  */
 UCLASS(abstract)
-class AAshfallCharacter : public ACharacter, public IAbilitySystemInterface, public IAshCombatAttackerInterface
+class AAshfallCharacter :	public ACharacter, 
+							public IAbilitySystemInterface, 
+							public IAshCombatAttackerInterface,
+							public IAshPlayerInterface
 {
 	GENERATED_BODY()
 
@@ -128,7 +135,16 @@ public:
 public:
 	virtual void BeginPlay() override;
 
-	virtual void CheckChargedAttack() override;
+	//IAshCombatAttackerInterface
+	virtual void CheckChargedAttack_Implementation() override;
+	virtual void CheckLightAttack_Implementation() override;
+
+	//IAshPlayerInterface
+	virtual void Damage_Implementation(FGameplayEffectSpecHandle SpecHandle) override;
+	virtual void Die_Implementation() override;
+
+	UPROPERTY(EditDefaultsOnly,Category = "Damage")
+	TSubclassOf<UGameplayEffect> DamageEffectClass;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UAbilitySystemComponent* AbilitySystemComponent;
@@ -147,4 +163,6 @@ public:
 	TSubclassOf<UGameplayAbility> GroundSlamAbilityClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Ability")
 	TSubclassOf<UGameplayAbility> ChargeAttactAbilityClass;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly,Category="Ability")
+	UDataTable* AbilityStatsTable = nullptr;
 };

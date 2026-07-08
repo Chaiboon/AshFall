@@ -22,6 +22,10 @@ void AAshBaseEnemy::BeginPlay()
 	Super::BeginPlay();
 	AggroTarget = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 	
+	GameMode = GetWorld()->GetAuthGameMode<AAshGameMode>();
+	GameState = GetWorld()->GetGameState<AAshGameState>();
+	if (!GameState) return;
+	GameState->AddEnemyCount(1);
 }
 
 // Called every frame
@@ -30,15 +34,15 @@ void AAshBaseEnemy::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AAshBaseEnemy::Damage_Implementation(float Amount)
+void AAshBaseEnemy::Damage_Implementation(FGameplayEffectSpecHandle SpecHandle)
 {
-	FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(DamageEffectClass, 1.0f,AbilitySystemComponent->MakeEffectContext());
-	UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle,FGameplayTag::RequestGameplayTag("Data.Damage"),-Amount);
 	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
 }
 
 void AAshBaseEnemy::Die_Implementation()
 {
+	if (GameMode) GameMode->OnEnemyDied();
+
 	this->Destroy();
 }
 

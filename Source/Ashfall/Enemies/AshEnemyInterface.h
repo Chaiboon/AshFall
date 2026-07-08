@@ -23,7 +23,7 @@ class ASHFALL_API IAshEnemyInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	UFUNCTION(BlueprintNativeEvent)
-	void Damage(float Amount);
+	void Damage(FGameplayEffectSpecHandle SpecHandle);
 	UFUNCTION(BlueprintNativeEvent)
 	void Die();
 	UFUNCTION(BlueprintNativeEvent)

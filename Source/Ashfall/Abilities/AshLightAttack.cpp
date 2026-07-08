@@ -3,8 +3,8 @@
 
 #include "AshLightAttack.h"
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
+#include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "GameFramework/Character.h"
-#include "AshChargeAttackAbility.h"
 
 void UAshLightAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle, 
 										const FGameplayAbilityActorInfo* ActorInfo, 
@@ -40,15 +40,13 @@ void UAshLightAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 	{
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
-}
 
-void UAshLightAttack::EndAbility(const FGameplayAbilitySpecHandle Handle, 
-									const FGameplayAbilityActorInfo* ActorInfo, 
-									const FGameplayAbilityActivationInfo ActivationInfo, 
-									bool bReplicateEndAbility, 
-									bool bWasCancelled)
-{
-	Super::EndAbility(Handle, ActorInfo, ActivationInfo, bReplicateEndAbility, bWasCancelled);
+	if(UAbilityTask_WaitGameplayEvent* WaitHitEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, FGameplayTag::RequestGameplayTag(FName("Event.LightAttack.Hit"))))
+	{
+		WaitHitEvent->EventReceived.AddDynamic(this, &UAshLightAttack::OnHitEventReceived);
+		WaitHitEvent->ReadyForActivation();
+	}
+
 }
 
 void UAshLightAttack::OnMontageCompleted()
@@ -60,3 +58,20 @@ void UAshLightAttack::OnMontageCancelled()
 	EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 }
 
+float UAshLightAttack::GetDamageAmount() const
+{
+	if (FAshAbilityStatRow* AbilityRow = GetAbilityData(FString("LightAttack"), 1))
+	{
+		return AbilityRow->Damage;
+	}
+	return 0.0f;
+}
+
+float UAshLightAttack::GetAttackRange() const
+{
+	if (FAshAbilityStatRow* AbilityRow = GetAbilityData(FString("LightAttack"), 1))
+	{
+		return AbilityRow->AttackRange;
+	}
+	return 0.0f;
+}

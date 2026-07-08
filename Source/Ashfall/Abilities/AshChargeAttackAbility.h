@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
 #include "Animation/AnimMontage.h"
+#include "AshBaseInstantDamageAbility.h"
 
 #include "AshChargeAttackAbility.generated.h"
 
@@ -12,7 +13,7 @@
  * 
  */
 UCLASS()
-class ASHFALL_API UAshChargeAttackAbility : public UGameplayAbility
+class ASHFALL_API UAshChargeAttackAbility : public UAshBaseInstantDamageAbility
 {
 	GENERATED_BODY()
 	
@@ -38,8 +39,8 @@ protected:
 	float MinChargeTime = 0.2f;
 	UPROPERTY(VisibleAnywhere)
 	float ChargeStartTime;
-
 	float ChargePercent = 0.0f;
+	bool bIsReleasing = false;
 
 	UFUNCTION()
 	void OnChargeMontageCompleted();
@@ -49,6 +50,7 @@ protected:
 	void OnReleaseMontageCompleted();
 	UFUNCTION()
 	void OnReleaseeMontageCancelled();
-	UFUNCTION()
-	void OnEventReceived(FGameplayEventData Payload);
+
+	virtual float GetDamageAmount() const override;
+	virtual float GetAttackRange() const override;
 };

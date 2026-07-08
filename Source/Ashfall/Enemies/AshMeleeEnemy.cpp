@@ -4,6 +4,7 @@
 #include "AshMeleeEnemy.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "AIController.h"
+#include "Abilities/AshLightAttack.h"
 
 // Sets default values
 AAshMeleeEnemy::AAshMeleeEnemy()
@@ -17,6 +18,9 @@ AAshMeleeEnemy::AAshMeleeEnemy()
 void AAshMeleeEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+
+	FGameplayAbilitySpec AbilitySpec(Ability, 1);
+	AbilitySystemComponent->GiveAbility(AbilitySpec);
 }
 
 // Called every frame
@@ -31,6 +35,6 @@ void AAshMeleeEnemy::Tick(float DeltaTime)
 
 	if (FVector::Dist(this->GetActorLocation(), Target->GetActorLocation()) <= AttackRange)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Melee Attacking!!"));
+		//UE_LOG(LogTemp, Warning, TEXT("Melee Attacking!!"));
 	}
 }

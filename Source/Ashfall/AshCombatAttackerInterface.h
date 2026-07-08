@@ -13,7 +13,6 @@ UINTERFACE(MinimalAPI)
 class UAshCombatAttackerInterface : public UInterface
 {
 	GENERATED_BODY()
-	
 };
 
 class ASHFALL_API IAshCombatAttackerInterface
@@ -24,4 +23,6 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent)
 	void CheckChargedAttack();
+	UFUNCTION(BlueprintNativeEvent)
+	void CheckLightAttack();
 };

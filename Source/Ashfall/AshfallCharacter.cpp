@@ -16,6 +16,8 @@
 #include "Abilities/AshChargeAttackAbility.h"
 #include "Ashfall.h"
 #include "Enemies/AshBaseEnemy.h"
+#include "AbilitySystemBlueprintLibrary.h"
+
 
 AAshfallCharacter::AAshfallCharacter()
 {
@@ -213,4 +215,32 @@ UAbilitySystemComponent* AAshfallCharacter::GetAbilitySystemComponent() const
 UAshAttributeSet* AAshfallCharacter::GetAttributeSet() const
 {
 	return AttributeSet;
+}
+
+void AAshfallCharacter::CheckChargedAttack_Implementation()
+{
+	FGameplayEventData Payload;
+	Payload.Instigator = this;
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this,
+		FGameplayTag::RequestGameplayTag(TEXT("Event.ChargeAttack.Hit")),
+		Payload);
+}
+
+void AAshfallCharacter::CheckLightAttack_Implementation()
+{
+	FGameplayEventData Payload;
+	Payload.Instigator = this;
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this,
+		FGameplayTag::RequestGameplayTag(TEXT("Event.LightAttack.Hit")),
+		Payload);
+}
+
+void AAshfallCharacter::Damage_Implementation(FGameplayEffectSpecHandle SpecHandle)
+{
+	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+}
+
+void AAshfallCharacter::Die_Implementation()
+{
+	this->Destroy();
 }

@@ -8,6 +8,9 @@
 #include "AbilitySystemInterface.h"
 #include "Attributes/AshEnemyAttributeSet.h"
 #include "AshEnemyInterface.h"
+#include "GamePlaySystem/AshGameState.h"
+#include "GamePlaySystem/AshGameMode.h"
+#include "Abilities/GameplayAbility.h"
 
 #include "AshBaseEnemy.generated.h"
 
@@ -31,9 +34,14 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	TWeakObjectPtr<AActor> AggroTarget;
+	UPROPERTY()
+	AAshGameState* GameState;
+	UPROPERTY()
+	AAshGameMode* GameMode;
+
 
 	//Override from EnemySystemInterface
-	virtual void Damage_Implementation(float Amount) override;
+	virtual void Damage_Implementation(FGameplayEffectSpecHandle SpecHandle) override;
 	virtual void Die_Implementation() override;
 	virtual AActor* GetAggroTarget_Implementation() const override;
 
@@ -48,6 +56,9 @@ public:
 	UAshEnemyAttributeSet* AttributeSet;
 
 	UAshEnemyAttributeSet* GetAttributeSet() const;
+
+	UPROPERTY(EditDefaultsOnly, Category="Ablility")
+	TSubclassOf<UGameplayAbility> Ability;
 
 	UPROPERTY(EditDefaultsOnly, Category = "DamageEffectClass")
 	TSubclassOf<UGameplayEffect> DamageEffectClass;

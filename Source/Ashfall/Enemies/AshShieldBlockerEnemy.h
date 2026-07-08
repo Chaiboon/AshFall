@@ -32,7 +32,7 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	bool bIsShieldBroke = false;
 
-	virtual void Damage_Implementation(float Amount) override;
+	virtual void Damage_Implementation(FGameplayEffectSpecHandle SpecHandle) override;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
 	UAshBlockerAttributeSet* AttributeBlockerSet;

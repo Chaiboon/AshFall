@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Abilities/GameplayAbility.h"
 #include "Animation/AnimMontage.h"
+#include "AshBaseInstantDamageAbility.h"
 
 #include "AshLightAttack.generated.h"
 
@@ -12,7 +13,7 @@
  * 
  */
 UCLASS()
-class ASHFALL_API UAshLightAttack : public UGameplayAbility
+class ASHFALL_API UAshLightAttack : public UAshBaseInstantDamageAbility
 {
 	GENERATED_BODY()
 
@@ -21,9 +22,11 @@ public:
 	UAnimMontage* AnimMontageToPlay;
 
 	virtual void ActivateAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, const FGameplayEventData* TriggerEventData) override;
-	virtual void EndAbility(const FGameplayAbilitySpecHandle Handle, const FGameplayAbilityActorInfo* ActorInfo, const FGameplayAbilityActivationInfo ActivationInfo, bool bReplicateEndAbility, bool bWasCancelled) override;
 	UFUNCTION()
 	void OnMontageCompleted();
 	UFUNCTION()
 	void OnMontageCancelled();
+
+	virtual float GetDamageAmount() const override;
+	virtual float GetAttackRange() const override;
 };
