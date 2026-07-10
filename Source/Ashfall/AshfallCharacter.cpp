@@ -55,9 +55,9 @@ AAshfallCharacter::AAshfallCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
-	
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AttributeSet = CreateDefaultSubobject<UAshAttributeSet>(TEXT("AttributeSetComponent"));
+
 }
 
 void AAshfallCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -207,15 +207,7 @@ void AAshfallCharacter::BeginPlay()
 	AbilitySystemComponent->GiveAbility(ChargeAttaclSpec);
 }
 
-UAbilitySystemComponent* AAshfallCharacter::GetAbilitySystemComponent() const
-{
-	return AbilitySystemComponent;
-}
 
-UAshAttributeSet* AAshfallCharacter::GetAttributeSet() const
-{
-	return AttributeSet;
-}
 
 void AAshfallCharacter::CheckChargedAttack_Implementation()
 {

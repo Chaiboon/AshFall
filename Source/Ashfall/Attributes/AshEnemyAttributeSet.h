@@ -6,6 +6,7 @@
 #include "AttributeSet.h"
 #include "AbilitySystemComponent.h"
 #include "AshAttributeAccessorMacros.h"
+#include "AshBaseAttributeSet.h"
 
 #include "AshEnemyAttributeSet.generated.h"
 
@@ -14,7 +15,7 @@
  */
 
 UCLASS()
-class ASHFALL_API UAshEnemyAttributeSet : public UAttributeSet
+class ASHFALL_API UAshEnemyAttributeSet : public UAshBaseAttributeSet
 {
 	GENERATED_BODY()
 
@@ -22,12 +23,4 @@ public:
 	UAshEnemyAttributeSet();
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
 
-
-	UPROPERTY(BlueprintReadOnly, Category = "Attributes")
-	FGameplayAttributeData MaxHealth;
-	UPROPERTY(BlueprintReadOnly, Category = "Attributes")
-	FGameplayAttributeData Health;
-	
-	ATTRIBUTE_ACCESSORS(UAshEnemyAttributeSet, MaxHealth)
-	ATTRIBUTE_ACCESSORS(UAshEnemyAttributeSet, Health)
 };

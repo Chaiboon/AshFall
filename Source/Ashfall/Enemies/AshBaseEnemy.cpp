@@ -4,13 +4,13 @@
 #include "AshBaseEnemy.h"
 #include "Kismet/GameplayStatics.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "Attributes/AshEnemyAttributeSet.h"
 
 // Sets default values
 AAshBaseEnemy::AAshBaseEnemy()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("AbilitySystemComponent"));
 	AttributeSet = CreateDefaultSubobject<UAshEnemyAttributeSet>(TEXT("AttributeSetComponent"));
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
@@ -49,14 +49,4 @@ void AAshBaseEnemy::Die_Implementation()
 AActor* AAshBaseEnemy::GetAggroTarget_Implementation() const
 {
 	return AggroTarget.Get();
-}
-
-UAbilitySystemComponent* AAshBaseEnemy::GetAbilitySystemComponent() const
-{
-	return AbilitySystemComponent;
-}
-
-UAshEnemyAttributeSet* AAshBaseEnemy::GetAttributeSet() const
-{
-	return AttributeSet;
 }

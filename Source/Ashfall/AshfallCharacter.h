@@ -15,7 +15,7 @@
 #include "AshCombatAttackerInterface.h"
 #include "Engine/DataTable.h"
 #include "AshPlayerInterface.h"
-
+#include "AshBaseCharacter.h"
 
 #include "AshfallCharacter.generated.h"
 
@@ -39,8 +39,7 @@ DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
  *  Implements a controllable orbiting camera
  */
 UCLASS(abstract)
-class AAshfallCharacter :	public ACharacter, 
-							public IAbilitySystemInterface, 
+class AAshfallCharacter :	public AAshBaseCharacter,
 							public IAshCombatAttackerInterface,
 							public IAshPlayerInterface
 {
@@ -143,18 +142,6 @@ public:
 	virtual void Damage_Implementation(FGameplayEffectSpecHandle SpecHandle) override;
 	virtual void Die_Implementation() override;
 
-	UPROPERTY(EditDefaultsOnly,Category = "Damage")
-	TSubclassOf<UGameplayEffect> DamageEffectClass;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
-	UAbilitySystemComponent* AbilitySystemComponent;
-
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UAshAttributeSet* AttributeSet;
-
-	UAshAttributeSet* GetAttributeSet() const;
-
 	UPROPERTY(EditDefaultsOnly,Category="Ability")
 	TSubclassOf<UGameplayAbility> LightAttackAbilityClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Ability")
@@ -163,6 +150,5 @@ public:
 	TSubclassOf<UGameplayAbility> GroundSlamAbilityClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Ability")
 	TSubclassOf<UGameplayAbility> ChargeAttactAbilityClass;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly,Category="Ability")
-	UDataTable* AbilityStatsTable = nullptr;
+	
 };

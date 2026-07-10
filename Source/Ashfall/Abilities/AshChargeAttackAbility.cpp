@@ -124,7 +124,8 @@ float UAshChargeAttackAbility::GetAttackRange() const
 	if (FAshAbilityStatRow* AbilityRow = GetAbilityData(FString("ChargeAttack"), 1))
 	{
 		return AbilityRow->AttackRange;
-	}
+	} 
+
 	return 0.0f;
 }
 

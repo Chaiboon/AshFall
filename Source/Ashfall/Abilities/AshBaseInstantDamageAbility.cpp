@@ -6,6 +6,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Enemies/AshEnemyInterface.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "AshBaseCharacter.h"
 #include "AshfallCharacter.h"
 
 void UAshBaseInstantDamageAbility::OnHitEventReceived(FGameplayEventData Payload)
@@ -54,7 +55,7 @@ void UAshBaseInstantDamageAbility::OnHitEventReceived(FGameplayEventData Payload
 
 FAshAbilityStatRow* UAshBaseInstantDamageAbility::GetAbilityData(FString AbilityName, int32 Level) const
 {
-	AAshfallCharacter* Owner = Cast<AAshfallCharacter>(GetAvatarActorFromActorInfo()); 
+	AAshBaseCharacter* Owner = Cast<AAshBaseCharacter>(GetAvatarActorFromActorInfo());
 	if (!Owner) return nullptr;
 
 	UDataTable* AbilityDataTable = Owner->AbilityStatsTable;
