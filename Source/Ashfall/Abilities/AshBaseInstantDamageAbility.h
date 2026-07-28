@@ -17,6 +17,10 @@ class ASHFALL_API UAshBaseInstantDamageAbility : public UGameplayAbility
 {
 	GENERATED_BODY()
 public:
+	UPROPERTY(EditDefaultsOnly)
+	FGameplayTag AbilityTag;
+	UPROPERTY(EditDefaultsOnly)
+	FString QueryAbilityName;
 
 	virtual float GetDamageAmount() const PURE_VIRTUAL(UAshInstantDamageAbility::GetDamageAmount, return 0.f;);
 	virtual float GetAttackRange() const PURE_VIRTUAL(UAshInstantDamageAbility::GetAttackRange, return 0.f;);

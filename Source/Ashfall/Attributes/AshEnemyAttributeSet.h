@@ -21,6 +21,4 @@ class ASHFALL_API UAshEnemyAttributeSet : public UAshBaseAttributeSet
 
 public:
 	UAshEnemyAttributeSet();
-	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
-
 };

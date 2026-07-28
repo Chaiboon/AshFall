@@ -3,19 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
-#include "AshPlayerInterface.generated.h"
+#include "UObject/Interface.h"
+#include "GameplayEffectTypes.h"
+
+#include "AshCharacterInterface.generated.h"
 
 /**
  * 
  */
 UINTERFACE(MinimalAPI)
-class UAshPlayerInterface : public UInterface
+class UAshCharacterInterface : public UInterface
 {
 	GENERATED_BODY()
 };
 
-class ASHFALL_API IAshPlayerInterface
+class ASHFALL_API IAshCharacterInterface
 {
 	GENERATED_BODY()
 	

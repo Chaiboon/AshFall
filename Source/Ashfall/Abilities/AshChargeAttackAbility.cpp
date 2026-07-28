@@ -6,6 +6,7 @@
 #include "Abilities/Tasks/AbilityTask_PlayMontageAndWait.h"
 #include "Abilities/Tasks/AbilityTask_WaitGameplayEvent.h"
 #include "AshfallCharacter.h"
+#include "AshCombatAttackerInterface.h"
 #include "GameData/AshAbilityStatRow.h"
 
 UAshChargeAttackAbility::UAshChargeAttackAbility()
@@ -65,6 +66,15 @@ void UAshChargeAttackAbility::OnRelease(float TimeHeld)
 
 	if (ActualTimeCharged >= MinChargeTime)
 	{
+
+
+		AActor* Owner = GetAvatarActorFromActorInfo();
+		if (!Owner)  
+		{
+			EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+			return;
+		}
+			
 		UAbilityTask_PlayMontageAndWait* PlayMontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 			this,
 			NAME_None,
@@ -84,7 +94,7 @@ void UAshChargeAttackAbility::OnRelease(float TimeHeld)
 			PlayMontageTask->ReadyForActivation();
 		}
 		
-		UAbilityTask_WaitGameplayEvent* WaitReleaseEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, FGameplayTag::RequestGameplayTag(FName("Event.ChargeAttack.Hit")));
+		UAbilityTask_WaitGameplayEvent* WaitReleaseEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, AbilityTag);
 		if (WaitReleaseEvent)
 		{
 			WaitReleaseEvent->EventReceived.AddDynamic(this, &UAshChargeAttackAbility::OnHitEventReceived);

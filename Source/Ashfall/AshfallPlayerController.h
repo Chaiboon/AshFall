@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "GenericTeamAgentInterface.h"
+
 #include "AshfallPlayerController.generated.h"
 
 class UInputMappingContext;
@@ -14,16 +16,20 @@ class UUserWidget;
  *  Manages input mappings
  */
 UCLASS(abstract)
-class AAshfallPlayerController : public APlayerController
+class AAshfallPlayerController : public APlayerController, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 	
+private:
+
+	FGenericTeamId TeamId;
+
 protected:
 
 	/** Input Mapping Contexts */
 	UPROPERTY(EditAnywhere, Category ="Input|Input Mappings")
 	TArray<UInputMappingContext*> DefaultMappingContexts;
-
+	 
 	/** Input Mapping Contexts */
 	UPROPERTY(EditAnywhere, Category="Input|Input Mappings")
 	TArray<UInputMappingContext*> MobileExcludedMappingContexts;
@@ -40,5 +46,10 @@ protected:
 
 	/** Input mapping context setup */
 	virtual void SetupInputComponent() override;
+
+public:
+	//IGenericTeamAgentInterface
+	virtual void SetGenericTeamId(const FGenericTeamId& NewTeamID) override;
+	virtual FGenericTeamId  GetGenericTeamId() const override;
 
 };

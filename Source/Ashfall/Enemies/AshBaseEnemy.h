@@ -11,13 +11,14 @@
 #include "GamePlaySystem/AshGameState.h"
 #include "GamePlaySystem/AshGameMode.h"
 #include "Abilities/GameplayAbility.h"
+#include "GenericTeamAgentInterface.h"
 #include "AshBaseCharacter.h"
+
 
 #include "AshBaseEnemy.generated.h"
 
 UCLASS()
-class ASHFALL_API AAshBaseEnemy :	public AAshBaseCharacter,
-									public IAshEnemyInterface
+class ASHFALL_API AAshBaseEnemy : public AAshBaseCharacter, public IAshEnemyInterface
 {
 	GENERATED_BODY()
 
@@ -39,13 +40,17 @@ public:
 	UPROPERTY()
 	AAshGameMode* GameMode;
 
-	//Override from EnemySystemInterface
-	virtual void Damage_Implementation(FGameplayEffectSpecHandle SpecHandle) override;
-	virtual void Die_Implementation() override;
 	virtual AActor* GetAggroTarget_Implementation() const override;
 
 	UPROPERTY(EditDefaultsOnly, Category="Ablility")
 	TSubclassOf<UGameplayAbility> Ability;
 
+	virtual void Die_Implementation() override;
+
+	UPROPERTY(EditDefaultsOnly)
+	FGenericTeamId TeamID = 2;
+
+	UPROPERTY(EditDefaultsOnly)
+	float AttackActivationRange = 80.0f;
 };	
 

@@ -10,16 +10,6 @@ class AAshArrowProjectile;
 
 #include "AshArcherEnemy.generated.h"
 
-
-UENUM(BlueprintType)
-enum class ECharacterState : uint8
-{
-	Idle        UMETA(DisplayName = "Idle State"),
-	Fleeing     UMETA(DisplayName = "Fleeing State"),
-	Attacking   UMETA(DisplayName = "Attacking State"),
-	Dead        UMETA(DisplayName = "Dead State")
-};
-
 UCLASS()
 class ASHFALL_API AAshArcherEnemy : public AAshBaseEnemy
 {
@@ -34,25 +24,6 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	UPROPERTY(EditDefaultsOnly)
-	float AttackRange = 700.0f;
-	UPROPERTY(EditDefaultsOnly)
-	float RetreatRange = 350.0f;
-	UPROPERTY(EditDefaultsOnly)
-	float FleeCoolDown = 2.0f;
-	UPROPERTY(VisibleAnywhere)
-	float CurrentFleeCoolDown;
-	UPROPERTY(EditDefaultsOnly)
-	float FiringCoolDown = 2.0f;
-
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Character State")
-	ECharacterState CurrentState;
-
-	FTimerHandle MyTimerHandle;
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<AAshArrowProjectile> ArrowProjectile;

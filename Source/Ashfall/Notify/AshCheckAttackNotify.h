@@ -4,18 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
-#include "AshLightAttackNotify.generated.h"
+#include "GameplayTagContainer.h"
+
+#include "AshCheckAttackNotify.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ASHFALL_API UAshLightAttackNotify : public UAnimNotify
+class ASHFALL_API UAshCheckAttackNotify : public UAnimNotify
 {
 	GENERATED_BODY()
-
-public:	
-
+public:
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
-
+	UPROPERTY(EditAnywhere, Category = "GamePlayTag")
+	FGameplayTag AbilityTag;
 };

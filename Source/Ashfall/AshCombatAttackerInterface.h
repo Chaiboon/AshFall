@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "AbilitySystemBlueprintLibrary.h"
+
 #include "AshCombatAttackerInterface.generated.h"
 
 /**
@@ -22,7 +24,13 @@ class ASHFALL_API IAshCombatAttackerInterface
 public:
 
 	UFUNCTION(BlueprintNativeEvent)
-	void CheckChargedAttack();
+	void CheckAttack(FGameplayTag EventTag);
 	UFUNCTION(BlueprintNativeEvent)
-	void CheckLightAttack();
+	FGameplayTag GetGameplayTag();
+	UFUNCTION(BlueprintNativeEvent)
+	void SetGameplayTag(FGameplayTag EventTag);
+	UFUNCTION(BlueprintNativeEvent)
+	FString GetAbilityDataTag();
+	UFUNCTION(BlueprintNativeEvent)
+	void SetAbilityDataTag(const FString& AbilityDataTag);
 };

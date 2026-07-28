@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "AshBaseEnemy.h"
+
 #include "AshMeleeEnemy.generated.h"
 
 UCLASS()
@@ -16,14 +17,8 @@ public:
 	// Sets default values for this character's properties
 	AAshMeleeEnemy();
 
+	virtual void PossessedBy(AController* NewController) override;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-	
-	UPROPERTY(EditDefaultsOnly)
-	float AttackRange = 100.0f;
 };

@@ -38,3 +38,20 @@ UAshBaseAttributeSet* AAshBaseCharacter::GetAttributeSet() const
 {
 	return AttributeSet;
 }
+
+void AAshBaseCharacter::Damage_Implementation(FGameplayEffectSpecHandle SpecHandle)
+{
+	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+}
+
+void AAshBaseCharacter::Die_Implementation()
+{
+	this->Destroy();
+}
+
+void AAshBaseCharacter::CheckAttack_Implementation(FGameplayTag EventTag)
+{
+	FGameplayEventData Payload;
+	Payload.Instigator = this;
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this, EventTag, Payload);
+}

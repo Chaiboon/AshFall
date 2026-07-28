@@ -22,6 +22,11 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+private:
+	UPROPERTY(EditDefaultsOnly, meta = (ClampMin = "0.0", ClampMax = "1.0", AllowPrivateAccess= "true"))
+	float MovementSpeedDebuffMultiplier = 0.8f;
+	float BaseWalkSpeed;
+	FActiveGameplayEffectHandle SlowMovementEffectHandler;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -29,6 +34,14 @@ public:
 	bool IsAttackBlocked();
 	UPROPERTY(EditDefaultsOnly, meta = (ClampMin = "-1.0", ClampMax = "1.0"))
 	float BlockThreshold;
+
+	float GetMovementSpeedDebuffMultiplier();
+
+	float GetBaseWalkSpeed();
+	void SetBaseWalkSpeed(float NewBaseWalkSpeed);
+
+	FActiveGameplayEffectHandle GetSlowMovementEffectHandler();
+	void SetSlowMovementEffectHandler(FActiveGameplayEffectHandle NewSlowMovementEffectHandler);
 	UPROPERTY(VisibleAnywhere)
 	bool bIsShieldBroke = false;
 
@@ -37,6 +50,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Attributes")
 	UAshBlockerAttributeSet* AttributeBlockerSet;
 
-	UPROPERTY(EditDefaultsOnly, Category = "DamageEffectClass")
+	UPROPERTY(EditDefaultsOnly, Category = "EffectClass")
 	TSubclassOf<UGameplayEffect> DamageBlockEffectClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "EffectClass")
+	TSubclassOf<UGameplayEffect> MovementImparingEffectClass;
 };

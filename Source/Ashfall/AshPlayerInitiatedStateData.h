@@ -15,5 +15,5 @@ struct ASHFALL_API FAshPlayerInitiatedStateData : public FTableRowBase
 	GENERATED_BODY()
 	
 	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly)
-	int32 InitGoal = 0;
+	int32 InitGold = 0;
 };

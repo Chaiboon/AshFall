@@ -12,10 +12,9 @@
 #include "InputAction.h"
 #include "InputActionValue.h"
 #include "EnhancedInputComponent.h"
-#include "AshCombatAttackerInterface.h"
 #include "Engine/DataTable.h"
-#include "AshPlayerInterface.h"
 #include "AshBaseCharacter.h"
+#include "GenericTeamAgentInterface.h"
 
 #include "AshfallCharacter.generated.h"
 
@@ -37,11 +36,11 @@ DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 /**
  *  A simple player-controllable third person character
  *  Implements a controllable orbiting camera
+ *  Implements a controllable orbiting camera
  */
 UCLASS(abstract)
-class AAshfallCharacter :	public AAshBaseCharacter,
-							public IAshCombatAttackerInterface,
-							public IAshPlayerInterface
+class AAshfallCharacter :	public AAshBaseCharacter
+							
 {
 	GENERATED_BODY()
 
@@ -134,14 +133,6 @@ public:
 public:
 	virtual void BeginPlay() override;
 
-	//IAshCombatAttackerInterface
-	virtual void CheckChargedAttack_Implementation() override;
-	virtual void CheckLightAttack_Implementation() override;
-
-	//IAshPlayerInterface
-	virtual void Damage_Implementation(FGameplayEffectSpecHandle SpecHandle) override;
-	virtual void Die_Implementation() override;
-
 	UPROPERTY(EditDefaultsOnly,Category="Ability")
 	TSubclassOf<UGameplayAbility> LightAttackAbilityClass;
 	UPROPERTY(EditDefaultsOnly, Category = "Ability")
@@ -151,4 +142,13 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Ability")
 	TSubclassOf<UGameplayAbility> ChargeAttactAbilityClass;
 	
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Ability")
+	FGameplayTag LightAttackTag;
+	UPROPERTY(EditDefaultsOnly, Category = "Ability")
+	FGameplayTag ChargeAttackTag;
+	UPROPERTY(EditDefaultsOnly)
+	FGenericTeamId TeamID = 1;
+	virtual void PossessedBy(AController* NewController) override;
 };
+ 

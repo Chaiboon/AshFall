@@ -4,52 +4,65 @@
 #include "Abilities/AshBaseInstantDamageAbility.h"
 #include "GameFramework/Character.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "Enemies/AshEnemyInterface.h"
+#include "AshCharacterInterface.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "GenericTeamAgentInterface.h"
 #include "AshBaseCharacter.h"
 #include "AshfallCharacter.h"
 
 void UAshBaseInstantDamageAbility::OnHitEventReceived(FGameplayEventData Payload)
 {
-	if (AActor* Owner = GetAvatarActorFromActorInfo())
+	AActor* Owner = GetAvatarActorFromActorInfo();
+	if (!Owner) return;
+	
+	FVector CenterLocation = Owner->GetActorLocation();
+	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
+	UClass* ActorClassFillter = ACharacter::StaticClass();
+	TArray<AActor*> IgnoredActors;
+	IgnoredActors.Add(Owner);
+
+	TArray<AActor*> OverlappedActors;
+
+	bool bOverlap = UKismetSystemLibrary::SphereOverlapActors(Owner->GetWorld(),
+		CenterLocation, 
+		GetAttackRange(),
+		ObjectTypes,
+		ActorClassFillter,
+		IgnoredActors,
+		OverlappedActors);
+
+	if (!bOverlap) return;
+
+	AbilitySystemComponent = GetAbilitySystemComponentFromActorInfo();
+
+	if (!AbilitySystemComponent) return;
+	for (AActor* Actor : OverlappedActors)
 	{
-		FVector CenterLocation = Owner->GetActorLocation();
-		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-		ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
-		UClass* ActorClassFillter = ACharacter::StaticClass();
-		TArray<AActor*> IgnoredActors;
-		IgnoredActors.Add(Owner);
+		ACharacter* Character = Cast<ACharacter>(Actor);
+		
+		if (!Character) continue;
+		
+		AController* OwnerController = Cast<ACharacter>(Owner)->GetController();
+		if (!OwnerController) continue;
+		
+		AController* CharacterController = Character->GetController();
+		if (!CharacterController) continue;
 
-		TArray<AActor*> OverlappedActors;
+		FGenericTeamId OwnerTeam = Cast<IGenericTeamAgentInterface>(OwnerController)->GetGenericTeamId();
+		if (!OwnerTeam) continue;
 
-		bool bOverlap = UKismetSystemLibrary::SphereOverlapActors(Owner->GetWorld(),
-			CenterLocation,
-			GetAttackRange(),
-			ObjectTypes,
-			ActorClassFillter,
-			IgnoredActors,
-			OverlappedActors);
+		FGenericTeamId TargetTeam = Cast<IGenericTeamAgentInterface>(CharacterController)->GetGenericTeamId();
+		if (!TargetTeam) continue;
 
-		if (!bOverlap) return;
+		if (FGenericTeamId::GetAttitude(OwnerTeam, TargetTeam) == ETeamAttitude::Friendly) continue;
+			
+		FGameplayEffectContextHandle ContextHandle = AbilitySystemComponent->MakeEffectContext();
+		ContextHandle.AddInstigator(Owner,Owner);
 
-		AbilitySystemComponent = GetAbilitySystemComponentFromActorInfo();
-
-		if (!AbilitySystemComponent) return;
-		for (AActor* Actor : OverlappedActors)
-		{
-			if (ACharacter* Character = Cast<ACharacter>(Actor))
-			{
-				if (Character->Implements<UAshEnemyInterface>() || Character->Implements<UAshPlayerInterface>())
-				{
-					FGameplayEffectContextHandle ContextHandle = AbilitySystemComponent->MakeEffectContext();
-					ContextHandle.AddInstigator(Owner,Owner);
-
-					FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(DamageEffectClass, 1.0f, ContextHandle);
-					UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, FGameplayTag::RequestGameplayTag("Data.Damage"), -GetDamageAmount());
-					if (Character->Implements<UAshEnemyInterface>()) IAshEnemyInterface::Execute_Damage(Character, SpecHandle); else IAshPlayerInterface::Execute_Damage(Character, SpecHandle);
-				}
-			}
-		}
+		FGameplayEffectSpecHandle SpecHandle = AbilitySystemComponent->MakeOutgoingSpec(DamageEffectClass, 1.0f, ContextHandle);
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(SpecHandle, FGameplayTag::RequestGameplayTag("Data.Damage"), -GetDamageAmount());
+		IAshCharacterInterface::Execute_Damage(Character, SpecHandle);
 	}
 }
 

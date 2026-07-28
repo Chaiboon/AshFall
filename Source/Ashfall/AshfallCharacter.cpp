@@ -17,6 +17,7 @@
 #include "Ashfall.h"
 #include "Enemies/AshBaseEnemy.h"
 #include "AbilitySystemBlueprintLibrary.h"
+#include "AshfallPlayerController.h"
 
 
 AAshfallCharacter::AAshfallCharacter()
@@ -137,8 +138,6 @@ void AAshfallCharacter::ChargeAttack(const FInputActionValue& Value)
 	if (!IsValid(AbilitySystemComponent) || !ChargeAttactAbilityClass) return;
 	
 	AbilitySystemComponent->AbilityLocalInputPressed(static_cast<int32>(EAshAbilityInputID::ChargeAttack));
-
-	UE_LOG(LogTemp, Warning, TEXT("Press button"));
 }
 
 void AAshfallCharacter::OnHoldAbilityEnd(const FInputActionValue& Value)
@@ -146,8 +145,6 @@ void AAshfallCharacter::OnHoldAbilityEnd(const FInputActionValue& Value)
 	if (!IsValid(AbilitySystemComponent) || !ChargeAttactAbilityClass) return;
 	
 	AbilitySystemComponent->AbilityLocalInputReleased(static_cast<int32>(EAshAbilityInputID::ChargeAttack));
-	UE_LOG(LogTemp, Warning, TEXT("Released button"));
-	
 }
 
 void AAshfallCharacter::DoMove(float Right, float Forward)
@@ -207,32 +204,13 @@ void AAshfallCharacter::BeginPlay()
 	AbilitySystemComponent->GiveAbility(ChargeAttaclSpec);
 }
 
-
-
-void AAshfallCharacter::CheckChargedAttack_Implementation()
+void AAshfallCharacter::PossessedBy(AController* NewController)
 {
-	FGameplayEventData Payload;
-	Payload.Instigator = this;
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this,
-		FGameplayTag::RequestGameplayTag(TEXT("Event.ChargeAttack.Hit")),
-		Payload);
+	Super::PossessedBy(NewController);
+
+	AAshfallPlayerController* ControllerWithTeam = Cast<AAshfallPlayerController>(NewController);
+	if (ControllerWithTeam) ControllerWithTeam->SetGenericTeamId(TeamID);
 }
 
-void AAshfallCharacter::CheckLightAttack_Implementation()
-{
-	FGameplayEventData Payload;
-	Payload.Instigator = this;
-	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(this,
-		FGameplayTag::RequestGameplayTag(TEXT("Event.LightAttack.Hit")),
-		Payload);
-}
 
-void AAshfallCharacter::Damage_Implementation(FGameplayEffectSpecHandle SpecHandle)
-{
-	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
-}
 
-void AAshfallCharacter::Die_Implementation()
-{
-	this->Destroy();
-}

@@ -59,3 +59,14 @@ void AAshfallPlayerController::SetupInputComponent()
 		}
 	}
 }
+
+void AAshfallPlayerController::SetGenericTeamId(const FGenericTeamId& NewTeamID)
+{
+	TeamId = NewTeamID;
+}
+
+FGenericTeamId AAshfallPlayerController::GetGenericTeamId() const
+{
+	return TeamId;
+}
+

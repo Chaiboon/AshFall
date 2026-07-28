@@ -73,3 +73,6 @@ Plugins/**/Intermediate/*
 
 # Cache files for the editor to use
 DerivedDataCache/*
+
+# Third-party marketplace asset packs — not redistributed in this repo
+Content/SlashTrail_SoftTofu/

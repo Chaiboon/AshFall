@@ -34,19 +34,14 @@ void AAshBaseEnemy::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AAshBaseEnemy::Damage_Implementation(FGameplayEffectSpecHandle SpecHandle)
+AActor* AAshBaseEnemy::GetAggroTarget_Implementation() const
 {
-	AbilitySystemComponent->ApplyGameplayEffectSpecToSelf(*SpecHandle.Data.Get());
+	return AggroTarget.Get();
 }
 
 void AAshBaseEnemy::Die_Implementation()
 {
 	if (GameMode) GameMode->OnEnemyDied();
 
-	this->Destroy();
-}
-
-AActor* AAshBaseEnemy::GetAggroTarget_Implementation() const
-{
-	return AggroTarget.Get();
+	Super::Die_Implementation();
 }

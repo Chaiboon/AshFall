@@ -20,10 +20,13 @@ class ASHFALL_API UAshBaseAttributeSet : public UAttributeSet
 public:
 	UAshBaseAttributeSet();
 
+	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
+
 	UPROPERTY(BlueprintReadOnly,Category="Attributes")
 	FGameplayAttributeData MaxHealth;
 	UPROPERTY(BlueprintReadOnly,Category="Attributes")
 	FGameplayAttributeData Health;
+
 
 	ATTRIBUTE_ACCESSORS(UAshBaseAttributeSet,MaxHealth)
 	ATTRIBUTE_ACCESSORS(UAshBaseAttributeSet,Health)

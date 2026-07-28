@@ -6,11 +6,16 @@
 #include "GameFramework/Character.h"
 #include "AbilitySystemInterface.h"
 #include "Attributes/AshBaseAttributeSet.h"
+#include "AshCombatAttackerInterface.h"
+#include "AshCharacterInterface.h"
 
 #include "AshBaseCharacter.generated.h"
 
 UCLASS()
-class ASHFALL_API AAshBaseCharacter : public ACharacter, public IAbilitySystemInterface
+class ASHFALL_API AAshBaseCharacter :	public ACharacter, 
+										public IAbilitySystemInterface,
+										public IAshCharacterInterface,
+										public IAshCombatAttackerInterface
 {
 	GENERATED_BODY()
 
@@ -29,6 +34,9 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	//IAshCombatAttackerInterface
+	virtual void CheckAttack_Implementation(FGameplayTag EventTag) override;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UAbilitySystemComponent* AbilitySystemComponent;
 
@@ -41,4 +49,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly,Category="StatTable")
 	UDataTable* AbilityStatsTable;
+
+	//IAshCharacterInterface
+	virtual void Damage_Implementation(FGameplayEffectSpecHandle SpecHandle) override;
+	virtual void Die_Implementation() override;
+
 };

@@ -18,14 +18,22 @@ void UAshLightAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 		return;
 	}
 
+	AActor* Owner = GetAvatarActorFromActorInfo();
+	if (!Owner)
+	{
+		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
+		return;
+	}
+
+
 	UAbilityTask_PlayMontageAndWait* PlayMontageTask = UAbilityTask_PlayMontageAndWait::CreatePlayMontageAndWaitProxy(
 		this,
 		NAME_None,
 		AnimMontageToPlay,
-		1.0f,         
-		NAME_None,     
-		true,         
-		1.0f           
+		1.0f,
+		NAME_None,
+		true,
+		1.0f
 	);
 
 	if (PlayMontageTask)
@@ -41,12 +49,11 @@ void UAshLightAttack::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
 		EndAbility(CurrentSpecHandle, CurrentActorInfo, CurrentActivationInfo, true, true);
 	}
 
-	if(UAbilityTask_WaitGameplayEvent* WaitHitEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, FGameplayTag::RequestGameplayTag(FName("Event.LightAttack.Hit"))))
+	if(UAbilityTask_WaitGameplayEvent* WaitHitEvent = UAbilityTask_WaitGameplayEvent::WaitGameplayEvent(this, AbilityTag))
 	{
 		WaitHitEvent->EventReceived.AddDynamic(this, &UAshLightAttack::OnHitEventReceived);
 		WaitHitEvent->ReadyForActivation();
 	}
-
 }
 
 void UAshLightAttack::OnMontageCompleted()
@@ -60,7 +67,7 @@ void UAshLightAttack::OnMontageCancelled()
 
 float UAshLightAttack::GetDamageAmount() const
 {
-	if (FAshAbilityStatRow* AbilityRow = GetAbilityData(FString("LightAttack"), 1))
+	if (FAshAbilityStatRow* AbilityRow = GetAbilityData(QueryAbilityName, 1))
 	{
 		return AbilityRow->Damage;
 	}
@@ -69,7 +76,7 @@ float UAshLightAttack::GetDamageAmount() const
 
 float UAshLightAttack::GetAttackRange() const
 {
-	if (FAshAbilityStatRow* AbilityRow = GetAbilityData(FString("LightAttack"), 1))
+	if (FAshAbilityStatRow* AbilityRow = GetAbilityData(QueryAbilityName, 1))
 	{
 		return AbilityRow->AttackRange;
 	}

@@ -20,8 +20,6 @@ AAshGameMode::AAshGameMode()
 void AAshGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
-	
 }
 
 void AAshGameMode::OnEnemyDied()

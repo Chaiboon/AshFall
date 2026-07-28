@@ -19,12 +19,15 @@ class ASHFALL_API UAshBlockerAttributeSet : public UAttributeSet
 public:
 	UAshBlockerAttributeSet();
 	virtual void PostGameplayEffectExecute(const struct FGameplayEffectModCallbackData& Data) override;
-
+	virtual void PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue) override;
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes")
 	FGameplayAttributeData MaxBlockHealth;
 	UPROPERTY(BlueprintReadOnly, Category = "Attributes")
 	FGameplayAttributeData BlockHealth;
+	UPROPERTY(BlueprintReadOnly, Category = "Attributes")
+	FGameplayAttributeData MoveSpeedMultiplier;
 
 	ATTRIBUTE_ACCESSORS(UAshBlockerAttributeSet, MaxBlockHealth)
 	ATTRIBUTE_ACCESSORS(UAshBlockerAttributeSet, BlockHealth)
+	ATTRIBUTE_ACCESSORS(UAshBlockerAttributeSet, MoveSpeedMultiplier)
 };
